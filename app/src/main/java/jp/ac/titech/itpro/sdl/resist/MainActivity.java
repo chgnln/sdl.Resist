@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private RotationView rotationView;
     private SensorManager manager;
     private Sensor gyroscope;
-    private float thetaZ = 0.0f;
+    private double thetaZ = 0.0;
     private long preTS = 0;
 
     @Override
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        manager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        manager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         float omegaZ = event.values[2];  // z-axis angular velocity (rad/sec)
         long tS = event.timestamp;
-        thetaZ = thetaZ + omegaZ * (tS - preTS) / (float) Math.pow(10,9);
+        thetaZ = thetaZ + (double) omegaZ * (tS - preTS) / Math.pow(10,9) % (Math.PI * 2);
         preTS = tS;
         rotationView.setDirection(thetaZ);
     }
